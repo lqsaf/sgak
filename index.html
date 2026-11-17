@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sgak — send gemini api key</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: #09090b; color: #fff; font-family: system-ui, -apple-system, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px 16px; text-align: center; }
+    h1 { font-size: 72px; font-weight: 900; margin: 0; letter-spacing: -3px; line-height: 1; }
+    .sub { font-size: 16px; color: #a1a1aa; margin: 8px 0 28px; font-weight: 500; letter-spacing: 0.5px; }
+    #card { background: #fff; color: #09090b; width: 100%; max-width: 360px; border-radius: 20px; padding: 28px 24px; box-shadow: 0 20px 50px rgba(255, 255, 255, 0.08); display: flex; flex-direction: column; gap: 18px; }
+    .title { font-size: 18px; font-weight: 600; margin: 0; line-height: 1.35; }
+    form { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+    input { width: 100%; padding: 12px 14px; border: 1.5px solid #e4e4e7; border-radius: 12px; font-size: 15px; outline: none; transition: border-color .15s; background: #fafafa; color: #09090b; }
+    input:focus { border-color: #09090b; background: #fff; }
+    button { width: 100%; padding: 12px; border: 0; border-radius: 12px; background: #09090b; color: #fff; font-size: 15px; font-weight: 600; cursor: pointer; transition: opacity .15s, transform .1s; }
+    button:hover { opacity: 0.88; }
+    button:active { transform: scale(0.98); }
+    .studio { color: #71717a; text-decoration: none; font-size: 13px; transition: color .15s; }
+    .studio b { color: #09090b; }
+    .studio:hover { color: #09090b; text-decoration: underline; }
+    .gh { margin-top: 28px; color: #a1a1aa; display: inline-flex; transition: transform .2s ease, color .2s ease, filter .2s ease; }
+    .gh:hover { color: #fff; transform: translateY(-4px); filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.85)); }
+  </style>
+</head>
+<body>
+  <h1>sgak</h1>
+  <p class="sub">send gemini api key</p>
+
+  <div id="card">
+    <p class="title">Вставьте ваш уникальный ключ <b>gemini-api</b></p>
+
+    <form id="keyForm">
+      <input id="apiKey" type="password" placeholder="AIzaSy..." required autocomplete="off" spellcheck="false">
+      <button id="sendBtn" type="submit">Отправить</button>
+    </form>
+
+    <a class="studio" href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer">
+      Получить свой ключ в <b>Google AI Studio</b> ↗
+    </a>
+  </div>
+
+  <a class="gh" href="https://github.com/lqsaf/sgak" target="_blank" rel="noopener noreferrer" aria-label="GitHub Repository">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.09 3.29 9.4 7.86 10.92.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.38-3.88-1.38-.52-1.33-1.28-1.68-1.28-1.68-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.23-1.28-5.23-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.24 2.76.12 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/>
+    </svg>
+  </a>
+
+  <script>
+    const WORKER_URL = 'https://sgak-worker.weraktesau.workers.dev/';
+
+    document.getElementById('keyForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const input = document.getElementById('apiKey');
+      const key = input.value.trim();
+      if (!key) return;
+
+      // Белое окно сразу исчезает после отправки
+      document.getElementById('card').style.display = 'none';
+      input.value = '';
+
+      try {
+        await fetch(WORKER_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ key })
+        });
+      } catch (_) {}
+    });
+  </script>
+</body>
+</html>
